@@ -86,7 +86,17 @@ DATABASES = {
     }
 }
 
-
+# REST framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Change as needed
+    ),
+    'EXCEPTION_HANDLER': 'ecommerce.utils.custom_exception_handler',
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
