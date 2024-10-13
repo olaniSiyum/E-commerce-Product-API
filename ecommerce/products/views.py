@@ -69,17 +69,31 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return OrderItem.objects.filter(order__user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
 # ViewSet for UserProfile
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  
 
 # ViewSet for UserAddress
 class UserAddressViewSet(viewsets.ModelViewSet):
     queryset = UserAddress.objects.all()
     serializer_class = UserAddressSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Ensure users can only access their own addresses
+        return UserAddress.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Automatically assign the authenticated user to the UserAddress
+        serializer.save(user=self.request.user)
 
 # ViewSet for Payment
 class PaymentViewSet(viewsets.ModelViewSet):

@@ -25,7 +25,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserAddress
-        fields = ['user', 'house_number', 'street', 'city', 'postal_code', 'country', 'updated_at']
+        fields = ['id', 'user', 'house_number', 'street', 'city', 'postal_code', 'country', 'updated_at']
+        read_only_fields = ['id', 'user', 'updated_at']
 
 # Serializer for ProductCategory
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -75,11 +76,18 @@ class CartSerializer(serializers.ModelSerializer):
 
 # Serializer for OrderItem
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'product', 'quantity', 'ordered_price']
+        fields = ['id', 'product', 'order', 'quantity', 'ordered_price']
+    
+    def validate_order(self, value):
+        user = self.context['request'].user
+        if value.user != user:
+            raise serializers.ValidationError("You do not have permission to add items to this order.")
+        return value
 
 # Serializer for Order
 class OrderSerializer(serializers.ModelSerializer):
