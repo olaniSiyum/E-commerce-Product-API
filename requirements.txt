@@ -1,0 +1,9 @@
+Django
+djangorestframework
+gunicorn         # For production server (used for deployment, e.g., on Heroku)
+mysqlclient       # MySQL database adapter for Django
+Pillow            # For handling image uploads (if you have product images)
+django-filter      # For filtering in DRF (optional but useful for product search and filters)
+dj-database-url    # For managing database URLs, especially in deployment environments
+whitenoise        # To serve static files in production
+djangorestframework-simplejwt  # For JWT token-based authentication (if needed)
